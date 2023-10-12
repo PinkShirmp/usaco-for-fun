@@ -116,25 +116,28 @@ void _print(const Head &H, const Tail &...T) {
 #endif
 #define fr(i,start,end) for(int i=start;i<end;i++)
 #define fre(x,arr) for(auto x : arr)
-int t,n,a[(int)2e5+10];
+int n,x,h[1001],s[1001];
 int main(){
   cin.tie(0)->sync_with_stdio(0);
-  cin>>t;
-  while(t--){
-    cin>>n;
-    fr(i,0,n) cin>>a[i];
-    vector<vector<int>>dp(2,vector<int>(n+1,1e9));
-    dp[1][0]=0;
-    fr(j,0,n){
-      dp[0][j+1]=min(dp[0][j],dp[1][j]+a[j]);
-      dp[1][j+1]=min(dp[1][j]+a[j],dp[0][j]);
-      if(j+2<=n){
-        dp[0][j+2]=min(dp[0][j+2],dp[1][j]+a[j]+a[j+1]);
-        dp[1][j+2]=min(dp[1][j+2],dp[0][j]);        
-      }
-      cout<<min(dp[0][n],dp[1][n]);
+    int n, x;
+    cin >> n >> x;
+    vector<int> h(n), s(n);
+    fr(i, 0, n) cin >> h[i];
+    fr(i, 0, n) cin >> s[i];
+
+    vector<vector<int>> dp(n + 1, vector<int>(x + 1));
+    fr(i, 1, n + 1) {
+        int prices = h[i - 1];
+        int pages = s[i - 1];
+        fr(j, 1, x + 1) {
+            if (prices <= j) {
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - prices] + pages);
+            } else {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
     }
-   
-  }
+    cout << dp[n][x];
+    return 0; 
 }
 
